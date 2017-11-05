@@ -3,7 +3,8 @@ function getGroups(token, callback=response=>printJson(response)) {
     url: "https://api.groupme.com/v3/groups",
     type: "get",
     data: {
-      token: token
+      token: token,
+      per_page: 99
     },
     success: function(response) {
       callback(response);
