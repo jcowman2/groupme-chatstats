@@ -1,4 +1,16 @@
 #groupSelect {
   display: none; }
 
+#selectGroupBtn {
+  display: none; }
+
+select:invalid {
+  color: gray; }
+
+option[value=""][disabled] {
+  display: none; }
+
+option {
+  color: black; }
+
 /*# sourceMappingURL=main.css.map */
