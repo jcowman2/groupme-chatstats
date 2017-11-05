@@ -1,8 +1,19 @@
+<!DOCTYPE html>
 <head>
   <title>GroupMe ChatStats</title>
+  <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
+  <input id="tokenInput" type="text" name="token" placeholder="Enter your token here.">
+  <button id="getGroupBtn" type="button">Get Groups</button><br>
+  <select id="groupSelect" required>
+    <option value="" disabled selected>Select a group.</option>
+  </select>
+  <button id="selectGroupBtn" type="button">Generate</button><br>
+
   <script src="../js/lib/jquery-3.2.1.min.js"></script>
+  <script src="../js/arrayUtils.js"></script>
+  <script src="../js/group.js"></script>
   <script src="../js/_config.js"></script>
   <script src="../js/loader.js"></script>
   <script src="../js/main.js"></script>
