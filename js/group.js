@@ -7,9 +7,11 @@ class Group {
     this.creatorId = json.creator_user_id;
     this.dateCreated = json.created_at;
     this.lastUpdated = json.updated_at;
+    this.messageCount = json.messages.count;
+    this.memberCount = json.members.length;
 
     //Unformatted json for now
-    this._members = this.members;
+    this._members = json.members;
   }
 }
 
