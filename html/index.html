@@ -1,11 +1,12 @@
+<!DOCTYPE html>
 <head>
   <title>GroupMe ChatStats</title>
+  <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
-  <form>
-    <input type="text" name="token" placeholder="Enter your token here.">
-    <input type="submit" value="Generate"><br>
-  </form>
+  <input id="tokenInput" type="text" name="token" placeholder="Enter your token here.">
+  <button id="getGroupBtn" type="button">Get Groups</button><br>
+  <select id="groupSelect"></select><br>
 
   <script src="../js/lib/jquery-3.2.1.min.js"></script>
   <script src="../js/arrayUtils.js"></script>
