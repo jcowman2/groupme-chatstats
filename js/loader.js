@@ -1,6 +1,6 @@
 var groups;
 
-function getGroups(token, callback=groups=>printJson(groups)) {
+function getGroups(token, successFunc=groups=>printJson(groups), errorFunc=()=>printToScreen("Error: Could not retrieve groups.")) {
   $.ajax({
     url: "https://api.groupme.com/v3/groups",
     type: "get",
@@ -10,10 +10,14 @@ function getGroups(token, callback=groups=>printJson(groups)) {
     },
     success: function(response) {
       groups = jsonToGroups(response);
-      callback(groups);
     },
-    failure: function() {
-      printToScreen("Error: Could not retrieve groups.");
+    complete: function() {
+      //Check if retrieval was succesful or not
+      if (groups == undefined) {
+        errorFunc();
+      } else {
+        successFunc(groups);
+      }
     }
   });
 }
@@ -30,13 +34,10 @@ function printToScreen(data) {
   $(document.body).append("<pre>" + data + "</pre><br>");
 }
 
-function addGroupNamesToDropdown($tokenInput, $dropdown, callback=()=>{}) {
-  var token = $tokenInput.val();
-  getGroups(token, function(groups) {
+function addGroupNamesToDropdown($select, callback=function(){}) {
     var groupNames = groups.toProperty("name");
     groupNames.forEach(function(name) {
-      $dropdown.append('<option>' + name + '</option>');
+      $select.append('<option>' + name + '</option>');
     });
     callback();
-  });
 }
