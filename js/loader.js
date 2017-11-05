@@ -1,4 +1,4 @@
-function getGroupNames(token) {
+function getGroups(token, callback=response=>printJson(response)) {
   $.ajax({
     url: "https://api.groupme.com/v3/groups",
     type: "get",
@@ -6,7 +6,7 @@ function getGroupNames(token) {
       token: token
     },
     success: function(response) {
-      printJson(response);
+      callback(response);
     },
     failure: function() {
       printToScreen("Error: Could not retrieve groups.");
@@ -15,13 +15,23 @@ function getGroupNames(token) {
 }
 
 function printJson(json) {
-  printToScreen("<pre>" + JSON.stringify(json, null, 4) + "</pre>");
+  printToScreen(JSON.stringify(json, null, 4));
+}
+
+function printArray(arr) {
+  arr.forEach(e => printToScreen(e));
 }
 
 function printToScreen(data) {
-  $(document.body).append(data + "<br>");
+  $(document.body).append("<pre>" + data + "</pre><br>");
 }
 
-var load = function() {
-  getGroupNames(tst.cf); //TODO: Change eventually
+var groups;
+
+function load() {
+  getGroups(tst.cf, function(json) {
+      groups = jsonToGroups(json);
+      var groupNames = groups.toProperty("name");
+      printArray(groupNames);
+  });
 }
