@@ -7,8 +7,10 @@ $(document).ready(function() {
   $getGroupBtn.click(function() {
     $getGroupBtn.hide();
     $tokenInput.attr("readonly", "readonly");
-    $groupSelect.show();
-    $selectGroupBtn.show();
+    addGroupNamesToDropdown($tokenInput, $groupSelect, function() {
+      $groupSelect.show();
+      $selectGroupBtn.show();
+    });
   });
 
   $selectGroupBtn.click(function() {
