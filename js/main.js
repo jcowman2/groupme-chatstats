@@ -16,6 +16,5 @@ $(document).ready(function() {
   $selectGroupBtn.click(function() {
     console.log($groupSelect.val());
   })
-  //$(document.body).append("Startup successful.<br>");
-  //load();
+
 });
