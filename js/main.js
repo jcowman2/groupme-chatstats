@@ -1,3 +1,4 @@
 $(document).ready(function() {
-  $(document.body).append("<p>Startup successful.</p>");
+  $(document.body).append("Startup successful.<br>");
+  load();
 });
