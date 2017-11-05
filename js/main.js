@@ -10,6 +10,10 @@ $(document).ready(function() {
     $groupSelect.show();
     $selectGroupBtn.show();
   });
+
+  $selectGroupBtn.click(function() {
+    console.log($groupSelect.val());
+  })
   //$(document.body).append("Startup successful.<br>");
   //load();
 });
