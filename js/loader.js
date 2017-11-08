@@ -65,7 +65,6 @@ function getMostRecentMessage(successFunc=message=>printJson(message), errorFunc
       limit: 1
     },
     success: function(response) {
-      console.log(response);
       message = new Message(response.response.messages[0]);
     },
     complete: function() {
@@ -80,26 +79,28 @@ function getMostRecentMessage(successFunc=message=>printJson(message), errorFunc
 }
 
 function getAllMessages(successFunc=messages=>console.log(messages), errorFunc=()=>printToScreen("Error: Could not retrieve messages.")) {
-  const numMessages = selectedGroup.messageCount;
+  let numMessages = selectedGroup.messageCount;
   let lastMessageId = undefined;
   messages = [];
 
-  for (let messageIndex = 0; messageIndex < numMessages; messageIndex += 100) {
+  function getNextMessageBlock() {
     let paramData = lastMessageId == undefined ? {token: userToken, limit: 100} : {token: userToken, limit:100, before_id: lastMessageId};
-    console.log(`ParamData: ${JSON.stringify(paramData)}`);
-    console.log(`LastMessageId: ${lastMessageId}`);
     $.ajax({
       url: "https://api.groupme.com/v3/groups/" + selectedGroup.id + "/messages",
       type: "get",
       data: paramData,
-      async: false,
       success: function(response) {
-        console.log(response);
-        Array.prototype.push.apply(messages, response.response.messages.toProperty("text"));
-        lastMessageId = response.response.messages[response.response.messages.length - 1].id;
+        Array.prototype.push.apply(messages, response.response.messages);
+        lastMessageId = messages[messages.length - 1].id;
+        if (messages.length < numMessages) {
+          getNextMessageBlock();
+        } else {
+          successFunc(messages);
+        }
       }
     });
   }
 
-  successFunc(messages);
+  getNextMessageBlock();
+
 }
