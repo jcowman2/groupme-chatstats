@@ -1,13 +1,14 @@
 var userToken;
 var groups;
 var selectedGroup;
+var messages;
 
-function getGroups(token, successFunc=groups=>printJson(groups), errorFunc=()=>printToScreen("Error: Could not retrieve groups.")) {
+function getGroups(successFunc=groups=>printJson(groups), errorFunc=()=>printToScreen("Error: Could not retrieve groups.")) {
   $.ajax({
     url: "https://api.groupme.com/v3/groups",
     type: "get",
     data: {
-      token: token,
+      token: userToken,
       per_page: 99
     },
     success: function(response) {
@@ -52,13 +53,13 @@ function selectGroup(groupName) {
   selectedGroup = groups.find(group => group.name == groupName);
 }
 
-function getMostRecentMessage(token, groupId, successFunc=message=>printJson(message), errorFunc=()=>printToScreen("Error: Could not retrieve message.")) {
+function getMostRecentMessage(successFunc=message=>printJson(message), errorFunc=()=>printToScreen("Error: Could not retrieve message.")) {
   var message;
   $.ajax({
-    url: "https://api.groupme.com/v3/groups/" + groupId + "/messages",
+    url: "https://api.groupme.com/v3/groups/" + selectedGroup.id + "/messages",
     type: "get",
     data: {
-      token: token,
+      token: userToken,
       limit: 1
     },
     success: function(response) {
@@ -74,4 +75,25 @@ function getMostRecentMessage(token, groupId, successFunc=message=>printJson(mes
       }
     }
   });
+}
+
+function getAllMessages(successFunc=messages=>console.log(messages), errorFunc=()=>printToScreen("Error: Could not retrieve messages.")) {
+  var numMessages = selectedGroup.messageCount;
+  var lastMessageId = undefined;
+  messages = [];
+
+  for (var messageIndex = 0; messageIndex < numMessages; messageIndex += 100) {
+    $.ajax({
+      url: "https://api.groupme.com/v3/groups/" + selectedGroup.id + "/messages",
+      type: "get",
+      data: lastMessageId == undefined ? {token: userToken, limit: 100} : {token: userToken, limit:100, before_id: lastMessageId},
+      success: function(response) {
+        console.log(response);
+        Array.prototype.push.apply(messages, response.response.messages);
+        lastMessageId = messages[messages.length - 1].id;
+      }
+    });
+  }
+
+  successFunc(messages);
 }

@@ -7,7 +7,7 @@ $(document).ready(function() {
 
   $getGroupBtn.click(function() {
     enterToken($tokenInput.val());
-    getGroups(userToken,
+    getGroups(
       //On Success
       function() {
         $getGroupBtn.hide();
@@ -25,8 +25,8 @@ $(document).ready(function() {
 
   $selectGroupBtn.click(function() {
     selectGroup($groupSelect.val());
-    console.log(selectedGroup.id);
-    getMostRecentMessage(userToken, selectedGroup.id);
+    getMostRecentMessage();
+    getAllMessages();
   })
 
 });
