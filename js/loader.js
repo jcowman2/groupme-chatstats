@@ -1,11 +1,14 @@
+var userToken;
 var groups;
+var selectedGroup;
+var messages;
 
-function getGroups(token, successFunc=groups=>printJson(groups), errorFunc=()=>printToScreen("Error: Could not retrieve groups.")) {
+function getGroups(successFunc=groups=>printJson(groups), errorFunc=()=>printToScreen("Error: Could not retrieve groups.")) {
   $.ajax({
     url: "https://api.groupme.com/v3/groups",
     type: "get",
     data: {
-      token: token,
+      token: userToken,
       per_page: 99
     },
     success: function(response) {
@@ -40,4 +43,64 @@ function addGroupNamesToDropdown($select, callback=function(){}) {
       $select.append('<option>' + name + '</option>');
     });
     callback();
+}
+
+function enterToken(token) {
+  userToken = token;
+}
+
+function selectGroup(groupName) {
+  selectedGroup = groups.find(group => group.name == groupName);
+  console.log(`${groupName} id: ${selectedGroup.id}`);
+  console.log(selectedGroup);
+}
+
+function getMostRecentMessage(successFunc=message=>printJson(message), errorFunc=()=>printToScreen("Error: Could not retrieve message.")) {
+  var message;
+  $.ajax({
+    url: "https://api.groupme.com/v3/groups/" + selectedGroup.id + "/messages",
+    type: "get",
+    data: {
+      token: userToken,
+      limit: 1
+    },
+    success: function(response) {
+      message = new Message(response.response.messages[0]);
+    },
+    complete: function() {
+      //Check if retrieval was succesful or not
+      if (message == undefined) {
+        errorFunc();
+      } else {
+        successFunc(message);
+      }
+    }
+  });
+}
+
+function getAllMessages(successFunc=messages=>console.log(messages), errorFunc=()=>printToScreen("Error: Could not retrieve messages.")) {
+  let numMessages = selectedGroup.messageCount;
+  let lastMessageId = undefined;
+  messages = [];
+
+  function getNextMessageBlock() {
+    let paramData = lastMessageId == undefined ? {token: userToken, limit: 100} : {token: userToken, limit:100, before_id: lastMessageId};
+    $.ajax({
+      url: "https://api.groupme.com/v3/groups/" + selectedGroup.id + "/messages",
+      type: "get",
+      data: paramData,
+      success: function(response) {
+        Array.prototype.push.apply(messages, response.response.messages);
+        lastMessageId = messages[messages.length - 1].id;
+        if (messages.length < numMessages) {
+          getNextMessageBlock();
+        } else {
+          successFunc(messages);
+        }
+      }
+    });
+  }
+
+  getNextMessageBlock();
+
 }

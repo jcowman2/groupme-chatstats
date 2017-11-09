@@ -6,7 +6,8 @@ $(document).ready(function() {
   var $selectGroupBtn = $('#selectGroupBtn');
 
   $getGroupBtn.click(function() {
-    getGroups($tokenInput.val(),
+    enterToken($tokenInput.val());
+    getGroups(
       //On Success
       function() {
         $getGroupBtn.hide();
@@ -23,7 +24,9 @@ $(document).ready(function() {
   });
 
   $selectGroupBtn.click(function() {
-    console.log($groupSelect.val());
+    selectGroup($groupSelect.val());
+    getMostRecentMessage();
+    getAllMessages();
   })
 
 });
