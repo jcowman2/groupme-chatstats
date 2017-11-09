@@ -3,6 +3,8 @@ var groups;
 var selectedGroup;
 var messages;
 
+const $output = $('#output');
+
 function getGroups(successFunc=groups=>printJson(groups), errorFunc=()=>printToScreen("Error: Could not retrieve groups.")) {
   $.ajax({
     url: "https://api.groupme.com/v3/groups",
@@ -78,7 +80,7 @@ function getMostRecentMessage(successFunc=message=>printJson(message), errorFunc
   });
 }
 
-function getAllMessages(successFunc=messages=>console.log(messages), errorFunc=()=>printToScreen("Error: Could not retrieve messages.")) {
+function getAllMessages(successFunc=messages=>console.log(messages)) {
   let numMessages = selectedGroup.messageCount;
   let lastMessageId = undefined;
   messages = [];
@@ -92,6 +94,9 @@ function getAllMessages(successFunc=messages=>console.log(messages), errorFunc=(
       success: function(response) {
         Array.prototype.push.apply(messages, response.response.messages);
         lastMessageId = messages[messages.length - 1].id;
+
+        $output.html(`${Math.floor((messages.length / numMessages) * 100)}% of messages retrieved.`)
+
         if (messages.length < numMessages) {
           getNextMessageBlock();
         } else {
