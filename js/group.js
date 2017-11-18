@@ -12,6 +12,8 @@ class Group {
 
     //Unformatted json for now
     this._members = json.members;
+
+    this.stats = new GroupStats();
   }
 }
 

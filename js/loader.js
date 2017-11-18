@@ -96,6 +96,8 @@ function getAllMessages(successFunc=messages=>console.log(messages)) {
         Array.prototype.push.apply(messages, response.response.messages);
         lastMessageId = messages[messages.length - 1].id;
 
+        analyze(response.response.messages, selectedGroup);
+
         //Update percentage of messages retrieved
         $output.html(`${Math.floor((messages.length / numMessages) * 100)}% of messages retrieved.`);
 
