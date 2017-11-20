@@ -1,3 +1,5 @@
+var debug = true;
+
 $(document).ready(function() {
 
   var $getGroupBtn = $('#getGroupBtn');
