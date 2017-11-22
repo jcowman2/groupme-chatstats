@@ -1,7 +1,7 @@
 var debug = true;
 
 $(document).ready(function() {
-
+  
   var $getGroupBtn = $('#getGroupBtn');
   var $tokenInput = $('#tokenInput');
   var $groupSelect = $('#groupSelect');

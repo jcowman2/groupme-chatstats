@@ -1,7 +1,7 @@
 class Message {
   constructor(json) {
     this.id = json.id;
-    this.dateCreated = json.created_at;
+    this.dateCreated = new Date(json.created_at * 1000);
     this.userId = json.user_id;
     this.groupId = json.group_id;
     this.posterName = json.name;
@@ -10,6 +10,6 @@ class Message {
     this.system = json.system;
 
     this.favoritedBy = json.favorited_by;
-    this.attachements = json.attachements;
+    this.attachments = json.attachments;
   }
 }
