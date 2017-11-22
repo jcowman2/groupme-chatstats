@@ -6,7 +6,7 @@ function analyzeStart(group) {
 }
 
 /*
- * Contains all analyzing functions to be run on each batch of messages while loading.
+ * Contains all operations to be run on each batch of messages while loading.
  * -> messages: json for array of message data
  * -> group: the selected group
  * => returns total number of messages retrieved
@@ -29,7 +29,9 @@ function analyzeMid(messages, group) {
  * -> group: the selected group
  */
 function analyzeEnd(group) {
+  group.stats.allMessages.reverse();
   group.stats.groupMessagesByDay();
+  group.stats.calcNumberMessagesByDay();
 }
 
 /*
@@ -46,8 +48,9 @@ class GroupStats {
     // /* The number of messages each user has posted. [userId:count] */
     // this.messagesByUser = new Map();
 
-    /* The messages posted every day since the group's creation. [date:[messages]]*/
-    this.messagesByDay = new Map();
+    this.messagesByDay = new Map();               //The messages posted every day since the group's creation. [date:[messages]]
+    this.numberMessagesByDay = new Map();         //Number of messages sent each day. [date:count]
+    this.cumulativeMessagesOverTime = new Map();  //Number of messages sent over time. [date:count]
   }
 
   /*
@@ -74,5 +77,19 @@ class GroupStats {
       let date = message.dateCreated;
       return '{0}-{1}-{2}'.format(date.getMonth(), date.getDate(), date.getFullYear());
     });
+  }
+
+  /*
+   * Calculates this.numberMessagesByDay and this.cumulativeMessagesOverTime
+   * Note: this.messagesByDay must be calculated first.
+   */
+  calcNumberMessagesByDay() {
+    let total = 0;
+    for (let key of this.messagesByDay.keys()) {
+      let len = this.messagesByDay.get(key).length;
+      this.numberMessagesByDay.set(key, len);
+      total += len;
+      this.cumulativeMessagesOverTime.set(key, total);
+    }
   }
 }
