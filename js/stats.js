@@ -45,6 +45,9 @@ class GroupStats {
 
     /* The number of messages each user has posted. [userId:count] */
     this.messagesByUser = new Map();
+
+    /* The messages posted every day since the group's creation. [date:[messages]]*/
+    this.messagesByDay = new Map();
   }
 
   /*
@@ -61,5 +64,9 @@ class GroupStats {
    */
   addMessageToUserMessageCount(message) {
     this.messagesByUser.setIfPresent(message.userId, i => i+1, () => 1);
+  }
+
+  groupMessagesByDay() {
+
   }
 }
