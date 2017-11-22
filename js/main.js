@@ -1,3 +1,5 @@
+var debug = true;
+
 $(document).ready(function() {
 
   var $getGroupBtn = $('#getGroupBtn');
@@ -25,7 +27,7 @@ $(document).ready(function() {
 
   $selectGroupBtn.click(function() {
     selectGroup($groupSelect.val());
-    getAllMessages();
+    getAllMessages(() => console.log(selectedGroup));
   })
 
 });

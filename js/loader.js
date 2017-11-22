@@ -53,8 +53,7 @@ function enterToken(token) {
 
 function selectGroup(groupName) {
   selectedGroup = groups.find(group => group.name == groupName);
-  console.log(`${groupName} id: ${selectedGroup.id}`);
-  console.log(selectedGroup);
+  if (debug) console.log(`${groupName} id: ${selectedGroup.id}`);
 }
 
 function getMostRecentMessage(successFunc=message=>printJson(message), errorFunc=()=>printToScreen("Error: Could not retrieve message.")) {
@@ -81,9 +80,12 @@ function getMostRecentMessage(successFunc=message=>printJson(message), errorFunc
 }
 
 function getAllMessages(successFunc=messages=>console.log(messages)) {
+
+  analyzeStart(selectedGroup);
+
   let numMessages = selectedGroup.messageCount;
+  let numRetrieved = 0;
   let lastMessageId = undefined;
-  messages = [];
 
   function getNextMessageBlock() {
     let paramData = lastMessageId == undefined ? {token: userToken, limit: 100} : {token: userToken, limit:100, before_id: lastMessageId};
@@ -92,17 +94,18 @@ function getAllMessages(successFunc=messages=>console.log(messages)) {
       type: "get",
       data: paramData,
       success: function(response) {   //Code to run after each ajax call
-        //Add messages to collection
-        Array.prototype.push.apply(messages, response.response.messages);
-        lastMessageId = messages[messages.length - 1].id;
+        let batch = response.response.messages;
+        lastMessageId = batch[batch.length - 1].id;
+        numRetrieved = analyzeMid(batch, selectedGroup);
 
         //Update percentage of messages retrieved
-        $output.html(`${Math.floor((messages.length / numMessages) * 100)}% of messages retrieved.`);
+        $output.html(`${Math.floor((numRetrieved / numMessages) * 100)}% of messages retrieved.`);
 
         //Get next group or end call stack
-        if (messages.length < numMessages) {
+        if (numRetrieved < numMessages) {
           getNextMessageBlock();
         } else {
+          analyzeEnd(selectedGroup);
           successFunc(messages);
         }
       }
