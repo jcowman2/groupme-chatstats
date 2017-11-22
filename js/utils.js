@@ -20,7 +20,7 @@ Array.prototype.groupBy = function(groupingFunction) {
     let groupKey = groupingFunction(element);
     groupedMap.doIfPresent(groupKey, (map, arr) => arr.push(element), (map) => map.set(groupKey,[element]));
   });
-  
+
   return groupedMap;
 }
 
@@ -54,3 +54,18 @@ Map.prototype.doIfPresent = function(key, ifPresent, ifNotPresent) {
     ifNotPresent(this);
   }
 }
+
+/*
+ * Formats a string with a series of arguments.
+ * -> ...args: series of arguments to be placed in string
+ * EXAMPLE: 'The {0} is dead. Don\'t code {0}. Code {1} that is open source!'.format('ASP', 'PHP');
+ * (Credit: https://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format)
+ */
+String.prototype.format = function() {
+    var formatted = this;
+    for (var i = 0; i < arguments.length; i++) {
+        var regexp = new RegExp('\\{'+i+'\\}', 'gi');
+        formatted = formatted.replace(regexp, arguments[i]);
+    }
+    return formatted;
+};

@@ -16,10 +16,10 @@ function analyzeMid(messages, group) {
   let stats = group.stats;
   Array.prototype.push.apply(stats.allMessages, messageObjects);
 
-  messageObjects.forEach(message => {
-    stats.setUserName(message);
-    stats.addMessageToUserMessageCount(message);
-  });
+  // messageObjects.forEach(message => {
+  //   stats.setUserName(message);
+  //   stats.addMessageToUserMessageCount(message);
+  // });
 
   return stats.allMessages.length;
 }
@@ -29,7 +29,7 @@ function analyzeMid(messages, group) {
  * -> group: the selected group
  */
 function analyzeEnd(group) {
-
+  group.stats.groupMessagesByDay();
 }
 
 /*
@@ -40,11 +40,11 @@ class GroupStats {
     /* All messages sent in the chat */
     this.allMessages = []
 
-    /* The most recent username of all who have posted in the chat. [userId:userNames] */
-    this.userIdToName = new Map();
-
-    /* The number of messages each user has posted. [userId:count] */
-    this.messagesByUser = new Map();
+    // /* The most recent username of all who have posted in the chat. [userId:userNames] */
+    // this.userIdToName = new Map();
+    //
+    // /* The number of messages each user has posted. [userId:count] */
+    // this.messagesByUser = new Map();
 
     /* The messages posted every day since the group's creation. [date:[messages]]*/
     this.messagesByDay = new Map();
@@ -66,7 +66,13 @@ class GroupStats {
     this.messagesByUser.setIfPresent(message.userId, i => i+1, () => 1);
   }
 
+  /*
+   * Groups the messages that were sent on each day since the group's creation
+   */
   groupMessagesByDay() {
-
+    this.messagesByDay = this.allMessages.groupBy(message => {
+      let date = message.dateCreated;
+      return '{0}-{1}-{2}'.format(date.getMonth(), date.getDate(), date.getFullYear());
+    });
   }
 }
